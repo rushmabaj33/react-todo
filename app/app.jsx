@@ -9,14 +9,15 @@ import firebase from 'app/firebase/';
 import router from 'app/router/';
 
 firebase.auth().onAuthStateChanged((user) => {
-	if (user) {
-		hashHistory.push('/todos');
-	} else {
-		hashHistory.push('/');
-	}
+  if (user) {
+    store.dispatch(actions.login(user.uid));
+    store.dispatch(actions.startAddTodos());
+    hashHistory.push('/todos');
+  } else {
+    store.dispatch(actions.logout());
+    hashHistory.push('/');
+  }
 });
-
-store.dispatch(actions.startAddTodos());
 
 // Load foundation
 $(document).foundation();
@@ -24,10 +25,9 @@ $(document).foundation();
 // App css
 require('style!css!sass!applicationStyles')
 
-
 ReactDOM.render(
   <Provider store={store}>
-  	{router}
+    {router}
   </Provider>,
   document.getElementById('app')
 );
